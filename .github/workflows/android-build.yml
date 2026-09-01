@@ -35,3 +35,27 @@ jobs:
           name: Alien-News-2.0.4-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+      - name: Prepare release signing
+        if: ${{ secrets.ALIEN_NEWS_KEYSTORE_BASE64 != '' }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ALIEN_NEWS_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ALIEN_NEWS_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ALIEN_NEWS_KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > release-keystore.jks
+          {
+            echo "storeFile=release-keystore.jks"
+            echo "storePassword=$STORE_PASSWORD"
+            echo "keyAlias=aliennews"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > keystore.properties
+      - name: Build signed Play Store bundle
+        if: ${{ secrets.ALIEN_NEWS_KEYSTORE_BASE64 != '' }}
+        run: gradle bundleRelease --stacktrace
+      - name: Upload signed AAB
+        if: ${{ secrets.ALIEN_NEWS_KEYSTORE_BASE64 != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Alien-News-2.0.4-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
