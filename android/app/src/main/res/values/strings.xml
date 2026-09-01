@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Alien News</string>
+    <string name="notification_channel_name">כתבות חדשות</string>
+    <string name="notification_channel_description">עדכונים על כתבות חדשות ב-Alien News</string>
+</resources>

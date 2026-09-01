@@ -1,0 +1,2 @@
+-keep class org.json.** { *; }
+-dontwarn org.json.**
