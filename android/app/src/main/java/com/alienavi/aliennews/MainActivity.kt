@@ -150,7 +150,15 @@ private fun AlienNewsAppScreen(
     CompositionLocalProvider(androidx.compose.ui.platform.LocalLayoutDirection provides direction) {
         Scaffold(
             containerColor = Cream,
-            topBar = { BrandHeader(state.offline, state.loading, state.language, viewModel::refresh) },
+            topBar = {
+                BrandHeader(
+                    offline = state.offline,
+                    loading = state.loading,
+                    language = state.language,
+                    refresh = viewModel::refresh,
+                    onLanguageChange = viewModel::setLanguage,
+                )
+            },
             bottomBar = { BottomNavigation(state.tab, state.language, viewModel::setTab) },
         ) { padding ->
             AnimatedContent(targetState = state.tab, label = "tab") { tab ->
@@ -174,7 +182,13 @@ private fun openArticle(context: android.content.Context, article: Article) {
 }
 
 @Composable
-private fun BrandHeader(offline: Boolean, loading: Boolean, language: String, refresh: () -> Unit) {
+private fun BrandHeader(
+    offline: Boolean,
+    loading: Boolean,
+    language: String,
+    refresh: () -> Unit,
+    onLanguageChange: (String) -> Unit,
+) {
     Column(Modifier.fillMaxWidth().background(Navy).statusBarsPadding()) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 8.dp),
@@ -195,6 +209,46 @@ private fun BrandHeader(offline: Boolean, loading: Boolean, language: String, re
             IconButton(onClick = refresh) {
                 if (loading) CircularProgressIndicator(Modifier.size(22.dp), color = Gold, strokeWidth = 2.dp)
                 else Icon(Icons.Outlined.Refresh, "רענון", tint = Color.White)
+            }
+        }
+        LanguageSwitcher(
+            language = language,
+            onLanguageChange = onLanguageChange,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 8.dp),
+        )
+    }
+}
+
+@Composable
+private fun LanguageSwitcher(
+    language: String,
+    onLanguageChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(14.dp))
+            .background(Color.White.copy(alpha = .1f))
+            .padding(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        listOf("he" to "עברית", "en" to "English").forEach { (code, label) ->
+            val selected = language == code
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(11.dp))
+                    .background(if (selected) Gold else Color.Transparent)
+                    .clickable(enabled = !selected) { onLanguageChange(code) }
+                    .padding(vertical = 10.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = label,
+                    color = if (selected) Navy else Color.White,
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = if (selected) FontWeight.ExtraBold else FontWeight.SemiBold,
+                )
             }
         }
     }
