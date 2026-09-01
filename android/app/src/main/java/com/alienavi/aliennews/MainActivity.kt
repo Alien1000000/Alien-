@@ -180,7 +180,7 @@ private fun BrandHeader(offline: Boolean, loading: Boolean, language: String, re
             modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(painterResource(R.drawable.ic_app_logo), null, Modifier.size(42.dp).clip(CircleShape))
+            Image(painterResource(R.mipmap.ic_launcher_foreground), null, Modifier.size(42.dp).clip(CircleShape))
             Spacer(Modifier.width(11.dp))
             Column(Modifier.weight(1f)) {
                 Text("ALIEN NEWS", color = Color.White, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
@@ -414,7 +414,7 @@ private fun SettingsScreen(state: NewsUiState, padding: PaddingValues, viewModel
         item { SettingCard(Icons.Outlined.Settings, if (state.language == "he") "פרטיות ותנאים" else "Privacy and terms", if (state.language == "he") "ללא הרשמה וללא מעקב אישי" else "No account and no personal tracking") { context.startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://aliennews.co.il/privacy"))) } }
         item {
             Column(Modifier.fillMaxWidth().padding(top = 20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(painterResource(R.drawable.ic_app_logo), null, Modifier.size(78.dp).clip(CircleShape))
+                Image(painterResource(R.mipmap.ic_launcher_foreground), null, Modifier.size(78.dp).clip(CircleShape))
                 Spacer(Modifier.height(10.dp)); Text("Alien News · ${BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.titleMedium); Text("אבי מואס · Alien Avi", color = Gold)
             }
         }
