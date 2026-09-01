@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Alien News</string>
+    <string name="notification_channel_name">News stories</string>
+    <string name="notification_channel_description">Updates about new Alien News stories</string>
+</resources>

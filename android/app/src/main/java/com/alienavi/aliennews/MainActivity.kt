@@ -187,7 +187,7 @@ private fun BrandHeader(offline: Boolean, loading: Boolean, language: String, re
                 Text(
                     if (offline) {
                         if (language == "he") "מצב לא מקוון · מהמטמון" else "OFFLINE · CACHED"
-                    } else "BY ALIEN AVI",
+                    } else if (language == "he") "חדשות ותיעוד מהעולם הלא מוכר" else "NEWS AND DOCUMENTATION",
                     color = if (offline) Sage else Gold,
                     style = MaterialTheme.typography.labelLarge,
                 )
