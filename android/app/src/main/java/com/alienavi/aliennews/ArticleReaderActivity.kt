@@ -111,7 +111,7 @@ private fun ArticleReader(url: String, title: String, language: String, onClose:
                         override fun onPageStarted(view: WebView, url: String?, favicon: android.graphics.Bitmap?) {
                             mainFrameFailed = false
                             loading = true
-                            if (url?.let(::isAllowedAlienNewsUrl) == true) suppressWebsiteConsentUi(view)
+                            if (url?.let(::isAllowedAlienNewsUrl) == true) prepareArticleForReading(view)
                         }
                         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                             return if (isAllowedAlienNewsUrl(request.url.toString())) false else {
@@ -119,7 +119,7 @@ private fun ArticleReader(url: String, title: String, language: String, onClose:
                             }
                         }
                         override fun onPageFinished(view: WebView, url: String?) {
-                            if (url?.let(::isAllowedAlienNewsUrl) == true) suppressWebsiteConsentUi(view)
+                            if (url?.let(::isAllowedAlienNewsUrl) == true) prepareArticleForReading(view)
                             loading = false
                             if (!mainFrameFailed) loadFailed = false
                         }
@@ -150,7 +150,7 @@ private fun isAllowedAlienNewsUrl(value: String): Boolean = runCatching {
     uri.scheme == "https" && uri.host.equals("aliennews.co.il", ignoreCase = true)
 }.getOrDefault(false)
 
-private fun suppressWebsiteConsentUi(webView: WebView) {
+private fun prepareArticleForReading(webView: WebView) {
     webView.evaluateJavascript(
         """
         (() => {
@@ -158,6 +158,18 @@ private fun suppressWebsiteConsentUi(webView: WebView) {
             localStorage.setItem('alien-news-analytics-consent', 'denied');
             document.querySelectorAll('.consent-panel, .privacy-settings-button')
               .forEach((element) => element.remove());
+
+            const redundantHeadings = new Set([
+              'עמדת Alien News', 'מה למדנו', 'למה זה חשוב', 'מסקנת המערכת',
+              'הערת המערכת', 'סיכום', 'Alien News position', 'What we learned',
+              'Why it matters', 'Editorial conclusion', 'Editorial note', 'Conclusion'
+            ]);
+            document.querySelectorAll('.article-body-sections h2')
+              .forEach((heading) => {
+                if (redundantHeadings.has(heading.textContent.trim())) heading.remove();
+              });
+            document.querySelectorAll('.article-note').forEach((element) => element.remove());
+            document.querySelectorAll('.article-analysis span').forEach((element) => element.remove());
           } catch (_) {}
         })();
         """.trimIndent(),

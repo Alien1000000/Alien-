@@ -31,6 +31,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Alien-News-2.0.2-debug
+          name: Alien-News-2.0.3-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
